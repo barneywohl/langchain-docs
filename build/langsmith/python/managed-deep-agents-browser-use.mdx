@@ -1,0 +1,62 @@
+---
+title: Add a browser to Managed Deep Agents
+sidebarTitle: Browser use
+description: Declare a managed browser so a managed deep agent can act on websites without browser infrastructure or a Browserbase key.
+---
+
+A browser lets a managed deep agent open websites, fill out forms, and check rendered pages. Managed Deep Agents runs the browser and adds the browser tools to the agent, so you do not run browser infrastructure or supply a Browserbase API key.
+
+For use cases and how the browser tools work, see [Browser use](/oss/python/deepagents/browser-use).
+
+<Note>
+Managed Deep Agents is in public [beta](/langsmith/release-stages) on [LangSmith Cloud](/langsmith/cloud). Browser declarations are not yet in a released version of the Managed Deep Agents SDK, and they require access to the LangSmith browser beta.
+
+Without browser beta access, use Stagehand's [manual Managed Deep Agents integration](https://docs.stagehand.dev/v4/integrations/agent-frameworks/deep-agents#deploy-with-managed-deep-agents) with a Browserbase account and API key instead.
+</Note>
+
+## Declare a browser
+
+Add `browser.py` at the [project root](/langsmith/python/managed-deep-agents-project-structure) and export a named `browser` created with `define_browser`:
+
+```python browser.py
+from managed_deepagents import define_browser
+
+browser = define_browser(
+    scope="thread",
+    idle_ttl_seconds=600,
+)
+```
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `scope` | `"thread"` | `"thread"` gives each thread its own browser. `"user"` shares one browser, including its logins, across a signed-in user's threads. |
+| `idle_ttl_seconds` | `600` | Seconds of inactivity before the browser stops. Accepts `60` to `86400`. |
+
+User scope requires a signed-in principal. To set up signed-in callers, see [Identity](/langsmith/python/managed-deep-agents-identity).
+
+## How the agent uses the browser
+
+Managed Deep Agents adds the Stagehand tools `run`, `snapshot`, and `screenshot` to the agent. You do not register them yourself. For what each tool does, see [Stagehand tools](/oss/python/deepagents/browser-use#stagehand-tools).
+
+The browser is independent of the agent's [sandbox](/langsmith/python/managed-deep-agents-sandboxes). The agent can browse and take screenshots without one. To save a screenshot to a file with the `screenshot` tool's `path` argument, add a sandbox and pass an absolute path.
+
+
+
+
+## See also
+
+- [Browser use](/oss/python/deepagents/browser-use)
+- [Project structure](/langsmith/python/managed-deep-agents-project-structure)
+- [Sandboxes](/langsmith/python/managed-deep-agents-sandboxes)
+- [Identity](/langsmith/python/managed-deep-agents-identity)
+
+---
+
+<div className="source-links">
+<Callout icon="terminal-2">
+    [Connect these docs](/use-these-docs) to your agent of choice via MCP for real-time answers.
+</Callout>
+<Callout icon="edit">
+    [Edit this page on GitHub](https://github.com/langchain-ai/docs/edit/main/src/langsmith/managed-deep-agents-browser-use.mdx) or [file an issue](https://github.com/langchain-ai/docs/issues/new/choose).
+</Callout>
+</div>
